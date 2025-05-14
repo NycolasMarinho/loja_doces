@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrinho - Loja de Doces</title>
+  <link rel="stylesheet" href="css/carrinho.css">
+</head>
+<body>
+  <header>
+    <div class="logo">Doçura De Doces</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="doces.html">Produtos</a></li>
+        <li><a href="carrinho.html" class="active">Carrinho</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="carrinho">
+    <h1>Seu Carrinho</h1>
+
+    <div class="itens-carrinho"></div>
+
+    <div class="resumo">
+      <h2>Total: R$ <span id="total">0.00</span></h2>
+      <div class="botoes">
+        <a href="checkout.html" class="btn-finalizar">Finalizar Compra</a>
+        <button class="btn-esvaziar" onclick="esvaziarCarrinho()">Esvaziar Carrinho</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Doçura de Doces. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    function carregarCarrinho() {
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      const container = document.querySelector('.itens-carrinho');
+      const totalEl = document.getElementById('total');
+      container.innerHTML = '';
+
+      let total = 0;
+
+      carrinho.forEach((item, index) => {
+        total += item.preco * item.quantidade;
+
+        const div = document.createElement('div');
+        div.classList.add('item');
+        div.innerHTML = `
+          <img src="${item.imagem}" alt="${item.nome}">
+          <div class="detalhes">
+            <h3>${item.nome}</h3>
+            <p>Quantidade: ${item.quantidade}</p>
+            <p>Preço: R$ ${(item.preco * item.quantidade).toFixed(2)}</p>
+          </div>
+          <button onclick="removerItem(${index})">Remover</button>
+        `;
+        container.appendChild(div);
+      });
+
+      totalEl.textContent = total.toFixed(2);
+    }
+
+    function removerItem(index) {
+      let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      carrinho.splice(index, 1);
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      carregarCarrinho();
+    }
+
+    function esvaziarCarrinho() {
+      localStorage.removeItem('carrinho');
+      carregarCarrinho();
+    }
+
+    window.onload = carregarCarrinho;
+  </script>
+</body>
+</html>
